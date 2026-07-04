@@ -1,0 +1,134 @@
+[gd_scene format=3 uid="uid://d1vrpvn8ixosi"]
+
+[ext_resource type="Script" uid="uid://gp1gamj54up8" path="res://canvas.gd" id="1_pfdkn"]
+[ext_resource type="Shader" uid="uid://cgsfg2vvbie1e" path="res://draw.gdshader" id="2_pfdkn"]
+[ext_resource type="Texture2D" uid="uid://hl61i4rr8463" path="res://masks/mask.png" id="4_k4n84"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_15w7l"]
+shader = ExtResource("2_pfdkn")
+shader_parameter/texture_size = Vector2(256, 256)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_75aqd"]
+size = Vector3(1, 1, 0.24780273)
+
+[sub_resource type="DrawableTexture2D" id="DrawableTexture2D_75aqd"]
+resource_name = "drawable_canvas_texture"
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pfdkn"]
+albedo_texture = SubResource("DrawableTexture2D_75aqd")
+normal_enabled = true
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_75aqd"]
+transparency = 1
+albedo_texture = ExtResource("4_k4n84")
+
+[sub_resource type="QuadMesh" id="QuadMesh_75aqd"]
+material = SubResource("ORMMaterial3D_75aqd")
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_75aqd"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_pfdkn"]
+sky_material = SubResource("ProceduralSkyMaterial_75aqd")
+
+[sub_resource type="Environment" id="Environment_15w7l"]
+background_mode = 2
+sky = SubResource("Sky_pfdkn")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="ImageTexture" id="ImageTexture_k4n84"]
+resource_name = "mask_image"
+
+[node name="Node3D" type="Node3D" unique_id=738968519]
+script = ExtResource("1_pfdkn")
+canvas_size = Vector2i(256, 256)
+draw_size = Vector2(16, 16)
+draw_material = SubResource("ShaderMaterial_15w7l")
+draw_albedo_texture = ExtResource("4_k4n84")
+base_mask = ExtResource("4_k4n84")
+
+[node name="Canvas" type="StaticBody3D" parent="." unique_id=1414681283]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Canvas" unique_id=399571025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.015014648)
+shape = SubResource("BoxShape3D_75aqd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Canvas" unique_id=868837722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00995636, 0)
+material_override = SubResource("ORMMaterial3D_pfdkn")
+mesh = SubResource("QuadMesh_75aqd")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=637763544]
+environment = SubResource("Environment_15w7l")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2120708762]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.3134079)
+current = true
+
+[node name="Control" type="Control" parent="." unique_id=535580260]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Control" unique_id=1262665082]
+layout_mode = 0
+offset_right = 192.0
+offset_bottom = 192.0
+texture = SubResource("DrawableTexture2D_75aqd")
+expand_mode = 1
+
+[node name="Button" type="Button" parent="Control" unique_id=1927706233]
+layout_mode = 0
+offset_left = 1544.0
+offset_right = 1920.0
+offset_bottom = 176.0
+text = "Copy Texture"
+
+[node name="TextureRect2" type="TextureRect" parent="Control" unique_id=545965836]
+layout_mode = 0
+offset_left = 1672.0
+offset_top = 272.0
+offset_right = 1912.0
+offset_bottom = 512.0
+texture = SubResource("ImageTexture_k4n84")
+expand_mode = 2
+
+[node name="Button2" type="Button" parent="Control" unique_id=44108466]
+layout_mode = 0
+offset_top = 313.0
+offset_right = 203.0
+offset_bottom = 490.0
+text = "Test Scene switch"
+
+[node name="RedButton" type="Button" parent="Control" unique_id=2118135654]
+layout_mode = 0
+offset_left = 1682.0
+offset_top = 680.0
+offset_right = 1900.0
+offset_bottom = 781.0
+text = "Red"
+
+[node name="GreenButton" type="Button" parent="Control" unique_id=2000016535]
+layout_mode = 0
+offset_left = 1681.0
+offset_top = 798.0
+offset_right = 1899.0
+offset_bottom = 899.0
+text = "Green"
+
+[node name="BlueButton" type="Button" parent="Control" unique_id=167069221]
+layout_mode = 0
+offset_left = 1682.0
+offset_top = 919.0
+offset_right = 1900.0
+offset_bottom = 1020.0
+text = "Blue"
+
+[connection signal="pressed" from="Control/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Control/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Control/RedButton" to="." method="_on_red_button_pressed"]
+[connection signal="pressed" from="Control/GreenButton" to="." method="_on_green_button_pressed"]
+[connection signal="pressed" from="Control/BlueButton" to="." method="_on_blue_button_pressed"]

@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://m5e1tuc7jl25"]
+
+[ext_resource type="Script" uid="uid://dvd8gq06egoqk" path="res://shop.gd" id="1_e7rdd"]
+[ext_resource type="Script" uid="uid://1k4jlqjavcwv" path="res://mask_mesh.gd" id="1_viryw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e7rdd"]
+transparency = 1
+
+[sub_resource type="QuadMesh" id="QuadMesh_blqjs"]
+
+[node name="Node3D" type="Node3D" unique_id=1556665349]
+script = ExtResource("1_e7rdd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=634703553]
+transform = Transform3D(0.9983119, 0.05029944, -0.029040404, 8.126676e-09, 0.49999997, 0.86602545, 0.058080792, -0.86456347, 0.49915594, 0, 2.9533467, 3.197009)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1237815441]
+material_override = SubResource("StandardMaterial3D_e7rdd")
+mesh = SubResource("QuadMesh_blqjs")
+script = ExtResource("1_viryw")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=975644081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.0405743)
+
+[node name="Control" type="Control" parent="." unique_id=112060199]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Control" unique_id=1243957128]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
