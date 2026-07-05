@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d1vrpvn8ixosi"]
 
-[ext_resource type="Script" uid="uid://gp1gamj54up8" path="res://canvas.gd" id="1_pfdkn"]
+[ext_resource type="Script" uid="uid://gp1gamj54up8" path="res://Mask/canvas.gd" id="1_pfdkn"]
 [ext_resource type="Shader" uid="uid://cgsfg2vvbie1e" path="res://draw.gdshader" id="2_pfdkn"]
 [ext_resource type="Texture2D" uid="uid://hl61i4rr8463" path="res://masks/mask.png" id="4_k4n84"]
 
