@@ -60,8 +60,8 @@ func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
 			rgb.y,
 			rgb.z,
 			size_total,
-			"%3.3f" % (rgb.x / prevalent_emotion * 100),
-			"%3.3f" % (rgb.y / prevalent_emotion * 100),
-			"%3.3f" % (rgb.z / prevalent_emotion * 100),
+			"%.3f" % (rgb.x / prevalent_emotion * 100),
+			"%.3f" % (rgb.y / prevalent_emotion * 100),
+			"%.3f" % (rgb.z / prevalent_emotion * 100),
 		],
 	)
