@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://dvd8gq06egoqk" path="res://shop.gd" id="1_e7rdd"]
 [ext_resource type="Script" uid="uid://1k4jlqjavcwv" path="res://Mask/mask_mesh.gd" id="1_viryw"]
 
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e7rdd"]
 transparency = 1
 

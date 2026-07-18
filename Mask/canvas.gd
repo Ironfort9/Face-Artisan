@@ -59,7 +59,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion or event is InputEventMouseButton:
 		if event.button_mask & MOUSE_BUTTON_MASK_LEFT:
-			var uv = calculate_uv(event)
+			var uv: Vector2 = calculate_uv(event)
 			if not uv.is_zero_approx():
 				var rect: Rect2 = Rect2(uv * Vector2(canvas_size) - draw_size * 0.5, draw_size)
 				albedo_texture.blit_rect(rect, draw_albedo_texture, Color(color), 0, draw_material)
