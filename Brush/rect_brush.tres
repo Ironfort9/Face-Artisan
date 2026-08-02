@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Brush" format=3 uid="uid://bmv17uukgjwwf"]
+
+[ext_resource type="Script" uid="uid://dbhkokpj0pwk5" path="res://Brush/Brush.gd" id="1_ana4j"]
+
+[resource]
+resource_name = "Rect Brush"
+script = ExtResource("1_ana4j")
+brush_size = Vector2(60, 20)
+metadata/_custom_type_script = "uid://dbhkokpj0pwk5"
