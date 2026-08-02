@@ -39,15 +39,14 @@ var triangle_mesh : TriangleMesh = TriangleMesh.new()
 
 func _ready() -> void:
 	# Setup material
-	var material : ORMMaterial3D = canvas_mesh.material_override
+	var material: ORMMaterial3D = canvas_mesh.material_override
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	var drawable_texture : DrawableTexture2D = DrawableTexture2D.new()
+	var drawable_texture: DrawableTexture2D = DrawableTexture2D.new()
 	drawable_texture.setup(canvas_size.x, canvas_size.y, DrawableTexture2D.DRAWABLE_FORMAT_RGBA8_SRGB, Color.TRANSPARENT)
 	drawable_texture.blit_rect(Rect2i(Vector2i(0, 0), canvas_size), base_mask, base_mask_color)
-	ResourceSaver.save(drawable_texture, base_mask_path)
+	ResourceSaver.save(drawable_texture.get_image(), base_mask_path)
 	material.albedo_texture = drawable_texture
 	albedo_texture = material.albedo_texture
-
 
 	# Setup mesh data
 	var surface : Array = canvas_mesh.mesh.surface_get_arrays(0)

@@ -1,22 +1,42 @@
 extends Node3D
 
+signal color_changed(color)
+signal brush_changed(brush)
+
 @export var canvas_size: Vector2i = Vector2i(1024, 1024)
-@export var draw_size: Vector2 = Vector2(10.0, 10.0)
-@export var draw_material: Material
+@export var draw_material: ShaderMaterial
 @export var draw_albedo_texture: Texture2D
 @export var base_mask: CompressedTexture2D
+
+@export_file("*.tres") var default_brush_path: String = "res://Brush/large_brush.tres"
 @export_color_no_alpha var base_mask_color: Color = Color.SADDLE_BROWN
 
 var new_mask_path: String = "res://masks/curr_mask.res"
 var base_mask_path: String = "res://masks/base_mask.res"
-var color: Color
+var draw_size: Vector2 = Vector2()
+
+var brush: Brush:
+	set(new_brush):
+		if new_brush != brush:
+			brush = new_brush
+			draw_material.set_shader_parameter("is_round", new_brush.is_rounded)
+			draw_size = new_brush.brush_size
+			brush_changed.emit(new_brush)
+
+var color: Color:
+	set(new_color):
+		color = new_color
+		color_changed.emit(color)
+
 var albedo_texture: DrawableTexture2D
+
 var faces: PackedVector3Array = PackedVector3Array()
 var uvs: PackedVector2Array = PackedVector2Array()
 var triangle_mesh: TriangleMesh = TriangleMesh.new()
 
 @onready var canvas_mesh: MeshInstance3D = $Canvas/MeshInstance3D
 @onready var camera: Camera3D = $Camera3D
+@onready var default_brush: Brush = load(default_brush_path)
 
 
 func _ready() -> void:
@@ -24,9 +44,14 @@ func _ready() -> void:
 	var material: ORMMaterial3D = canvas_mesh.material_override
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	var drawable_texture: DrawableTexture2D = DrawableTexture2D.new()
-	drawable_texture.setup(canvas_size.x, canvas_size.y, DrawableTexture2D.DRAWABLE_FORMAT_RGBA8_SRGB, Color.TRANSPARENT)
+	drawable_texture.setup(
+		canvas_size.x,
+		canvas_size.y,
+		DrawableTexture2D.DRAWABLE_FORMAT_RGBA8_SRGB,
+		Color.TRANSPARENT,
+	)
 	drawable_texture.blit_rect(Rect2i(Vector2i(0, 0), canvas_size), base_mask, base_mask_color)
-	ResourceSaver.save(drawable_texture.get_image(), base_mask_path)
+	ResourceSaver.save(drawable_texture, base_mask_path)
 	material.albedo_texture = drawable_texture
 	albedo_texture = material.albedo_texture
 
@@ -46,10 +71,9 @@ func _ready() -> void:
 	# Setup draw material
 	if draw_material:
 		draw_material.set_shader_parameter("texture_size", canvas_size)
-
-
-func _physics_process(_delta: float) -> void:
-	pass
+		draw_material.set_shader_parameter("is_round", default_brush.is_rounded)
+		draw_size = default_brush.brush_size
+	brush = default_brush
 
 
 func _unhandled_input(event: InputEvent) -> void:
