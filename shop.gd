@@ -5,7 +5,7 @@ extends Node3D
 # Using the 'PAD emotional state model' for the data
 # x = Non-Arousal => Arousal | Goes from 0 -> 1
 # y = Displeasure => Pleasure | Goes from 0 -> 1
-# z = Submissiveness => Dominance | Goes from 0 -> 1
+# z = Dominance => Submissiveness | Goes from 0 -> 1
 # w = Neutrality (Lack of any color, used to achieve intermediate values without 
 #                 another value being dominant)
 var emotion_data: Vector3
@@ -14,7 +14,7 @@ var emotion_data: Vector3
 
 
 func _ready() -> void:
-	var curr_mask: ImageTexture = ResourceLoader.load("res://masks/curr_mask.res", "ImageTexture")
+	var curr_mask: ImageTexture = load("res://masks/curr_mask.res")
 	var base_mask: Image = load("res://masks/base_mask.res")
 	var curr_mask_size: Vector2i = curr_mask.get_size()
 	base_mask.resize(curr_mask_size.x, curr_mask_size.y)
@@ -51,7 +51,7 @@ func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
 	var prevalent_emotion: float = max(
 		emotion_vector.x, # Non-Arousal / Arousal
 		emotion_vector.y, # Displeasure / Pleasure
-		emotion_vector.z, # Submissiveness / Dominance
+		emotion_vector.z, # Dominance / Submissiveness
 		emotion_vector.w, # Neutrality
 	)
 	emotion_data = Vector3(
@@ -59,6 +59,7 @@ func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
 		emotion_vector.y / prevalent_emotion,
 		emotion_vector.z / prevalent_emotion,
 	)
+	var closest_emotion: StringName = EmotionTools.closest_emotion(emotion_data)
 	label.text = "Total: {0}
 	Red: {1}
 	Green: {2}
@@ -68,7 +69,8 @@ func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
 	%Green: {6}%
 	%Blue: {7}%
 	%Neutral: {8}%
-	Emotion: {9}
+	Emotion Data: {9}
+	Emotion: {10} {11}
 	".format(
 		[
 			size_total,
@@ -80,6 +82,8 @@ func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
 			"%.3f" % (emotion_vector.y / prevalent_emotion * 100),
 			"%.3f" % (emotion_vector.z / prevalent_emotion * 100),
 			"%.3f" % (emotion_vector.w / prevalent_emotion * 100),
-			EmotionTools.closest_emotion(emotion_data),
+			emotion_data,
+			closest_emotion,
+			EmotionTools.Emotion[closest_emotion],
 		],
 	)

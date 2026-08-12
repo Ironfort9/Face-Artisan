@@ -1,42 +1,44 @@
 class_name EmotionTools
 extends Node
 
-## x = Non-Arousal => Arousal | Goes from 0 -> 1 [br]
-## y = Displeasure => Pleasure | Goes from 0 -> 1 [br]
-## z = Submissiveness => Dominance | Goes from 0 -> 1 [br]
-## w = Neutrality (Lack of any color, used to achieve intermediate values without 
-##                 another value being dominant)
+# Using the 'PAD emotional state model' for the data
+# x = Non-Arousal => Arousal | Goes from 0 -> 1
+# y = Displeasure => Pleasure | Goes from 0 -> 1
+# z = Dominance => Submissiveness | Goes from 0 -> 1
+# w = Neutrality (Lack of any color, used to achieve intermediate values without 
+#                 another value being dominant)
 const Emotion: Dictionary[StringName, Vector3] = {
 	# Center
-	"NEUTRALITY": Vector3(0, 0, 0),
+	"NEUTRAL": Vector3(0.5, 0.5, 0.5),
 	# Faces
-	"DOMINANCE": Vector3(0.5, 0.5, 1),
-	"LETHARGY": Vector3(0.5, 0, 0.5),
-	"ALERTNESS": Vector3(0.5, 1, 0.5),
-	"SADNESS": Vector3(0, 0.5, 0.5),
-	"HAPPINESS": Vector3(1, 0.5, 0.5),
+	"DOMINANT": Vector3(0.5, 0.5, 0),
+	"LETHARGIC": Vector3(0.5, 0, 0.5),
+	"SAD": Vector3(0, 0.5, 0.5),
+	"ALERT": Vector3(0.5, 1, 0.5),
+	"HAPPY": Vector3(1, 0.5, 0.5),
+	"POWERLESS": Vector3(0.5, 0.5, 1),
 	# Corners
-	"DEPRESSION": Vector3(0, 0, 0),
-	"RELAXATION": Vector3(1, 0, 0),
-	"ANXIETY": Vector3(0, 1, 0),
-	"CONTEMPT": Vector3(0, 0, 1),
-	"ADMIRATION": Vector3(1, 1, 0),
-	"CONFIDENCE": Vector3(1, 0, 1),
-	"ANGER": Vector3(0, 1, 1),
-	"EXCITEMENT": Vector3(1, 1, 1),
+	"DEPRESSED": Vector3(0, 0, 1),
+	"RELAXED": Vector3(1, 0, 1),
+	"ANXIOUS": Vector3(0, 1, 1),
+	"CONTEMPTUOUS": Vector3(0, 0, 0),
+	"ADMIRYING": Vector3(1, 1, 1),
+	"CONFIDENT": Vector3(1, 0, 0),
+	"ANGRY": Vector3(0, 1, 0),
+	"EXCITED": Vector3(1, 1, 0),
 	# Edges
-	"BOREDOM": Vector3(0.5, 0, 0),
-	"TENSION": Vector3(0.5, 1, 0),
-	"COMPOSURE": Vector3(0.5, 0, 1),
-	"EXUBERANCE": Vector3(0.5, 1, 1),
-	"FEAR": Vector3(0, 0.5, 0),
-	"COMPLIANCE": Vector3(1, 0.5, 0),
-	"DISGUST": Vector3(0, 0.5, 1),
-	"DETERMINATION": Vector3(1, 0.5, 1),
-	"DESPAIR": Vector3(0, 0, 0.5),
-	"CALMNESSNESS": Vector3(1, 0, 0.5),
-	"PANIC": Vector3(0, 1, 0.5),
-	"JOY": Vector3(1, 1, 0.5),
+	"BORED": Vector3(0.5, 0, 1),
+	"TENSE": Vector3(0.5, 1, 1),
+	"COMPOSED": Vector3(0.5, 0, 0),
+	"EXUBERANT": Vector3(0.5, 1, 0),
+	"FEARFUL": Vector3(0, 0.5, 1),
+	"COMPLIANT": Vector3(1, 0.5, 1),
+	"DISGUSTED": Vector3(0, 0.5, 0),
+	"DETERMINED": Vector3(1, 0.5, 0),
+	"DESPAIRFUL": Vector3(0, 0, 0.5),
+	"CALM": Vector3(1, 0, 0.5),
+	"PANICKED": Vector3(0, 1, 0.5),
+	"JOYFUL": Vector3(1, 1, 0.5),
 }
 const Difficulty: Dictionary[StringName, float] = {
 	"STRICT": 0.05,
@@ -52,13 +54,15 @@ static func closest_emotion(_input_vec: Vector3) -> StringName:
 	var closest_distance: float = INF
 	for emotion_name in emotion_names:
 		var current_distance: float = Emotion[emotion_name].distance_to(_input_vec)
+		if GlobalFlags.debug:
+			print(emotion_name + " => " + str(current_distance) + " | " + str(closest_distance))
 		if current_distance < closest_distance:
 			_closest_emotion = emotion_name
 			closest_distance = current_distance
 	return _closest_emotion
 
 
-static func close_to_emotion(input_vec: Vector3, expected: StringName, difficulty: float) -> bool:
+static func close_enough_to_emotion(input_vec: Vector3, expected: StringName, difficulty: float) -> bool:
 	var expected_vec: Vector3 = Emotion[expected]
 	var valid_x: bool = abs(input_vec.x - expected_vec.x) < difficulty
 	var valid_y: bool = abs(input_vec.y - expected_vec.y) < difficulty

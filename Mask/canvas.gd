@@ -1,7 +1,7 @@
 extends Node3D
 
-signal color_changed(color)
-signal brush_changed(brush)
+signal color_changed(color: Color)
+signal brush_changed(brush: Brush)
 
 @export var canvas_size: Vector2i = Vector2i(1024, 1024)
 @export var draw_material: ShaderMaterial
@@ -51,7 +51,9 @@ func _ready() -> void:
 		Color.TRANSPARENT,
 	)
 	drawable_texture.blit_rect(Rect2i(Vector2i(0, 0), canvas_size), base_mask, base_mask_color)
-	ResourceSaver.save(drawable_texture, base_mask_path)
+	var save_error: Error = ResourceSaver.save(drawable_texture.get_image(), base_mask_path)
+	if GlobalFlags.debug:
+		print("DrawableTexture '.save()' error code -> ", save_error)
 	material.albedo_texture = drawable_texture
 	albedo_texture = material.albedo_texture
 
@@ -129,8 +131,9 @@ func _on_button_pressed() -> void:
 	var image: Image = albedo_texture.get_image()
 	var image_texture: ImageTexture = ImageTexture.new()
 	image_texture.set_image(image)
+	var save_error: Error = ResourceSaver.save(image_texture, new_mask_path)
 	if GlobalFlags.debug:
-		print("Image_Texture '.save()' error code -> ", ResourceSaver.save(image_texture, new_mask_path))
+		print("Image_Texture '.save()' error code -> ", save_error)
 
 
 func _on_red_button_pressed() -> void:

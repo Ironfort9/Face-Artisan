@@ -8,8 +8,9 @@ transparency = 1
 
 [sub_resource type="QuadMesh" id="QuadMesh_blqjs"]
 
-[node name="Node3D" type="Node3D" unique_id=1556665349]
+[node name="Node3D" type="Node3D" unique_id=1556665349 node_paths=PackedStringArray("mask_mesh")]
 script = ExtResource("1_e7rdd")
+mask_mesh = NodePath("MeshInstance3D")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=634703553]
 transform = Transform3D(0.9983119, 0.05029944, -0.029040404, 8.126676e-09, 0.49999997, 0.86602545, 0.058080792, -0.86456347, 0.49915594, 0, 2.9533467, 3.197009)
