@@ -44,7 +44,7 @@ resource_name = "mask_image"
 [node name="Node3D" type="Node3D" unique_id=738968519]
 script = ExtResource("1_pfdkn")
 canvas_size = Vector2i(256, 256)
-draw_size = Vector2(16, 16)
+draw_size = Vector2(40, 40)
 draw_material = SubResource("ShaderMaterial_15w7l")
 draw_albedo_texture = ExtResource("4_k4n84")
 base_mask = ExtResource("4_k4n84")

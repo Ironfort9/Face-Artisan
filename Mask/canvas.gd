@@ -48,10 +48,6 @@ func _ready() -> void:
 		draw_material.set_shader_parameter("texture_size", canvas_size)
 
 
-func _physics_process(_delta: float) -> void:
-	pass
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if not draw_material:
 		return
@@ -93,6 +89,8 @@ func calculate_uv(event: InputEvent) -> Vector2:
 
 		# Find the uv corresponding to point f
 		var uv: Vector2 = uvs[index] * a1 + uvs[index + 1] * a2 + uvs[index + 2] * a3
+		if GlobalFlags.debug:
+			print("UV = ", uv)
 		return uv
 	else:
 		return Vector2()
@@ -103,7 +101,8 @@ func _on_button_pressed() -> void:
 	var image: Image = albedo_texture.get_image()
 	var image_texture: ImageTexture = ImageTexture.new()
 	image_texture.set_image(image)
-	print(ResourceSaver.save(image_texture, new_mask_path))
+	if GlobalFlags.debug:
+		print("Image_Texture '.save()' error code -> ", ResourceSaver.save(image_texture, new_mask_path))
 
 
 func _on_red_button_pressed() -> void:
@@ -119,4 +118,6 @@ func _on_blue_button_pressed() -> void:
 
 
 func _on_button_2_pressed() -> void:
-	print(get_tree().change_scene_to_file("res://shop.tscn"))
+	var err_code: Error = get_tree().change_scene_to_file("res://shop.tscn")
+	if GlobalFlags.debug:
+		print("'change_scene_to_file(shop.tscn)' error code -> ", err_code)

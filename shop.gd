@@ -1,8 +1,13 @@
 extends Node3D
 
-@export var debug: bool = true
 @export var mask_mesh: MeshInstance3D
 
+# Using the 'PAD emotional state model' for the data
+# x = Non-Arousal => Arousal | Goes from 0 -> 1
+# y = Displeasure => Pleasure | Goes from 0 -> 1
+# z = Submissiveness => Dominance | Goes from 0 -> 1
+# w = Neutrality (Lack of any color, used to achieve intermediate values without 
+#                 another value being dominant)
 var emotion_data: Vector3
 
 @onready var label: Label = $Control/Label
@@ -17,51 +22,64 @@ func _ready() -> void:
 
 
 func _set_mask_info(mask_texture: ImageTexture, base_mask_image: Image) -> void:
-	var rgb: Vector3 = Vector3(0, 0, 0)
+	var emotion_vector: Vector4 = Vector4.ZERO
 	var mask_image: Image = mask_texture.get_image()
 	var size: Vector2i = mask_image.get_size()
 	var size_total: int = size.x * size.y
 	var file: FileAccess
-	if debug:
+	if GlobalFlags.debug:
 		file = FileAccess.open("res://pixel_info.txt", FileAccess.WRITE)
 	for x in range(size.x):
 		for y in range(size.y):
 			var pixel_color: Color = mask_image.get_pixel(x, y)
 			var base_pixel_color: Color = base_mask_image.get_pixel(x, y)
-			if debug:
+			if GlobalFlags.debug:
 				file.store_string(
 					"({0}, {1}) => {2} || {3}\n"
 					.format([x, y, pixel_color, base_pixel_color]),
 				)
-			if pixel_color.a < 1.0 or pixel_color == base_pixel_color:
+			if pixel_color.a < 1.0:
 				size_total -= 1
-			if pixel_color.r > base_pixel_color.r:
-				rgb.x += 1
+			elif pixel_color == base_pixel_color:
+				emotion_vector.w += 1
+			elif pixel_color.r > base_pixel_color.r:
+				emotion_vector.x += 1
 			elif pixel_color.g > base_pixel_color.g:
-				rgb.y += 1
+				emotion_vector.y += 1
 			elif pixel_color.b > base_pixel_color.b:
-				rgb.z += 1
-	var prevalent_emotion: float = max(rgb.x, rgb.y, rgb.z, 1)
-	emotion_data = Vector3(
-		rgb.x / prevalent_emotion,
-		rgb.y / prevalent_emotion,
-		rgb.z / prevalent_emotion,
+				emotion_vector.z += 1
+	var prevalent_emotion: float = max(
+		emotion_vector.x, # Non-Arousal / Arousal
+		emotion_vector.y, # Displeasure / Pleasure
+		emotion_vector.z, # Submissiveness / Dominance
+		emotion_vector.w, # Neutrality
 	)
-	label.text = "Total: {3}
-	Red: {0}
-	Green: {1}
-	Blue: {2}
-	%Red: {4}%
-	%Green: {5}%
-	%Blue: {6}%
+	emotion_data = Vector3(
+		emotion_vector.x / prevalent_emotion,
+		emotion_vector.y / prevalent_emotion,
+		emotion_vector.z / prevalent_emotion,
+	)
+	label.text = "Total: {0}
+	Red: {1}
+	Green: {2}
+	Blue: {3}
+	Neutral: {4}
+	%Red: {5}%
+	%Green: {6}%
+	%Blue: {7}%
+	%Neutral: {8}%
+	Emotion: {9}
 	".format(
 		[
-			rgb.x,
-			rgb.y,
-			rgb.z,
 			size_total,
-			"%.3f" % (rgb.x / prevalent_emotion * 100),
-			"%.3f" % (rgb.y / prevalent_emotion * 100),
-			"%.3f" % (rgb.z / prevalent_emotion * 100),
+			emotion_vector.x,
+			emotion_vector.y,
+			emotion_vector.z,
+			emotion_vector.w,
+			"%.3f" % (emotion_vector.x / prevalent_emotion * 100),
+			"%.3f" % (emotion_vector.y / prevalent_emotion * 100),
+			"%.3f" % (emotion_vector.z / prevalent_emotion * 100),
+			"%.3f" % (emotion_vector.w / prevalent_emotion * 100),
+			EmotionTools.closest_emotion(emotion_data),
 		],
 	)

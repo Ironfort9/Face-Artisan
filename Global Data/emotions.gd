@@ -1,7 +1,12 @@
-class_name Emotions
-extends Resource
+class_name EmotionTools
+extends Node
 
-const Emotion: Dictionary[String, Vector3] = {
+## x = Non-Arousal => Arousal | Goes from 0 -> 1 [br]
+## y = Displeasure => Pleasure | Goes from 0 -> 1 [br]
+## z = Submissiveness => Dominance | Goes from 0 -> 1 [br]
+## w = Neutrality (Lack of any color, used to achieve intermediate values without 
+##                 another value being dominant)
+const Emotion: Dictionary[StringName, Vector3] = {
 	# Center
 	"NEUTRALITY": Vector3(0, 0, 0),
 	# Faces
@@ -33,7 +38,7 @@ const Emotion: Dictionary[String, Vector3] = {
 	"PANIC": Vector3(0, 1, 0.5),
 	"JOY": Vector3(1, 1, 0.5),
 }
-const Difficulty: Dictionary[String, float] = {
+const Difficulty: Dictionary[StringName, float] = {
 	"STRICT": 0.05,
 	"FAIR": 0.1,
 	"LENIENT": 0.2,
@@ -41,8 +46,20 @@ const Difficulty: Dictionary[String, float] = {
 }
 
 
-func close_to_emotion(input_vec: Vector3, expected: StringName, difficulty: float) -> bool:
-	var expected_vec: Vector3 = Emotions[expected]
+static func closest_emotion(_input_vec: Vector3) -> StringName:
+	var emotion_names: Array[StringName] = Emotion.keys()
+	var _closest_emotion: StringName = emotion_names[0]
+	var closest_distance: float = INF
+	for emotion_name in emotion_names:
+		var current_distance: float = Emotion[emotion_name].distance_to(_input_vec)
+		if current_distance < closest_distance:
+			_closest_emotion = emotion_name
+			closest_distance = current_distance
+	return _closest_emotion
+
+
+static func close_to_emotion(input_vec: Vector3, expected: StringName, difficulty: float) -> bool:
+	var expected_vec: Vector3 = Emotion[expected]
 	var valid_x: bool = abs(input_vec.x - expected_vec.x) < difficulty
 	var valid_y: bool = abs(input_vec.y - expected_vec.y) < difficulty
 	var valid_z: bool = abs(input_vec.z - expected_vec.z) < difficulty
