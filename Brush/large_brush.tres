@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Brush" format=3 uid="uid://ce2lbjablpfem"]
+
+[ext_resource type="Script" uid="uid://dbhkokpj0pwk5" path="res://Brush/Brush.gd" id="1_l047f"]
+
+[resource]
+resource_name = "Large Brush"
+script = ExtResource("1_l047f")
+brush_size = Vector2(60, 60)
+is_rounded = true
+metadata/_custom_type_script = "uid://dbhkokpj0pwk5"

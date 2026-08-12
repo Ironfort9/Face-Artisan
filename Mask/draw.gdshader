@@ -7,6 +7,7 @@ uniform sampler2D ao_texture : hint_default_white;
 uniform sampler2D roughness_texture : hint_default_white;
 uniform sampler2D metalic_texture : hint_default_black;
 uniform vec2 texture_size = vec2(1024.0, 1024.0);
+uniform bool is_round = true;
 
 void blit() {
 	vec2 screen_uv = FRAGCOORD.xy / texture_size;
@@ -16,7 +17,10 @@ void blit() {
 	float roughness = texture(roughness_texture, screen_uv).r;
 	float metalic = texture(metalic_texture, screen_uv).r;
 
-	float radius = round(length(UV * 2.0 - 1.0));
+	float radius;
+	if (is_round) radius = round(length(UV * 2.0 - 1.0));
+	else radius = 0.0;
+		
 	float alpha = 1.0 - radius;
 
 	// Output albedo
